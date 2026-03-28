@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
-import { blog_data, blogCategories } from '../assets/assets'
+import { blogCategories } from '../assets/assets'
 import BlogCard from './BlogCard';
-import { useAppContext } from '../context/AppContext';
+import { useAppContext } from '../context/useAppContext';
 
 const BlogList = () => {
 
@@ -14,6 +14,14 @@ const BlogList = () => {
       }
       return blogs.filter((blog)=> blog.title.toLowerCase().includes(input.toLowerCase()) || blog.category.toLowerCase().includes(input.toLowerCase()))
     }
+
+    const visibleBlogs = filteredDBlogs().filter((blog) => {
+      if (menu === "All") {
+        return true
+      }
+
+      return blog.category === menu
+    })
 
   return (
     <div>
@@ -33,8 +41,7 @@ const BlogList = () => {
       </div>
       <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 
       gap-8 mb-24 mx-8 sm:mx-16 xl:mx-40'>
-        {filteredDBlogs().filter((blog)=> menu === "All" ? true : 
-        blog.category === menu).map((blog)=> <BlogCard key={blog._id} blog={blog}/>)}
+        {visibleBlogs.map((blog)=> <BlogCard key={blog._id} blog={blog}/>)}
       </div>
     </div>
   )

@@ -1,13 +1,13 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { assets, blogCategories } from '../../assets/assets'
 import Quill from 'quill'
-import { useAppContext } from '../../context/AppContext'
+import { useAppContext } from '../../context/useAppContext'
 import toast from 'react-hot-toast'
 import {parse} from 'marked'
 
 const AddBlog = () => {
 
-    const {axios} = useAppContext()
+    const {axios, fetchBlogs} = useAppContext()
     const [isAdding, setIsAdding] = useState(false)
     const [loading, setLoading] = useState(false)
 
@@ -57,8 +57,11 @@ const AddBlog = () => {
                 toast.success(data.message)
                 setImage(false)
                 setTitle('')
+                setSubTitle('')
                 quillRef.current.root.innerHTML = ''
                 setCategory('Startup')
+                setPublished(false)
+                await fetchBlogs()
             }else{
                 toast.error(data.message)
             }
@@ -76,6 +79,9 @@ const AddBlog = () => {
         }
     },[])
 
+    const thumbnailPreview = image ? URL.createObjectURL(image) : assets.upload_area
+    const submitLabel = isAdding ? 'Adding...' : 'Add Blog'
+
   return (
     
     <form onSubmit={onSubmitHandler}
@@ -84,7 +90,7 @@ const AddBlog = () => {
 
             <p>Upload Thumbnail</p>
             <label htmlFor="image">
-                <img src={!image ? assets.upload_area : URL.createObjectURL(image)} alt="" className='mt-2 h-16 rounded cursor-pointer'/>
+                <img src={thumbnailPreview} alt="" className='mt-2 h-16 rounded cursor-pointer'/>
                 <input onChange={(e)=> setImage(e.target.files[0])} type="file" id='image' hidden required/>
             </label>
 
@@ -123,7 +129,7 @@ const AddBlog = () => {
             </div>
 
             <button disabled={isAdding}
-            type='submit' className='mt-8 w-40 h-10 bg-sky-950 text-white rounded cursor-pointer text-sm'>{isAdding ?  'Adding...':'Add Blog'}</button>
+            type='submit' className='mt-8 w-40 h-10 bg-sky-950 text-white rounded cursor-pointer text-sm'>{submitLabel}</button>
         </div>
     </form>
   )

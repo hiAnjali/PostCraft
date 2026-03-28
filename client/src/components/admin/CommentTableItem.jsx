@@ -1,6 +1,6 @@
 import React from 'react'
 import { assets } from '../../assets/assets';
-import { useAppContext } from '../../context/AppContext';
+import { useAppContext } from '../../context/useAppContext';
 import toast from 'react-hot-toast';
 
 const CommentTableItem = ({comment, fetchComments}) => {
@@ -42,10 +42,14 @@ const CommentTableItem = ({comment, fetchComments}) => {
       }
     }
 
+    const actionContent = !comment.isApproved
+      ? <img onClick={approveComment} src={assets.tick_icon} className='w-5 hover:scale-105 transition-all cursor-pointer'/>
+      : <p className='text-xs border border-green-900 text-green-600 rounded-full px-3 py-1'>Approved</p>
+
   return (
-    <tr className='order-y border-violet-900'>
+    <tr className='border-y border-violet-100'>
         <td className='px-6 py-4'>
-            <b className='font-medium text-violet-800'>Blog</b> : {blog.title}
+            <b className='font-medium text-violet-800'>Blog</b> : {blog?.title || 'Deleted blog'}
             <br />
             <br />
             <b className='font-medium text-violet-800'>Name</b> : {comment.name}
@@ -54,8 +58,7 @@ const CommentTableItem = ({comment, fetchComments}) => {
         </td>
         <td className='px-6 py-4 max-sm:hidden'>{BlogDate.toLocaleDateString()}</td>
         <td className='px-6 py-4 max-sm:hidden'>
-            <div className='inline-flex items-center gap-4'> {!comment.isApproved ? <img onClick={approveComment} src={assets.tick_icon} className='w-5 hover:scale-105 transition-all cursor-pointer'/> : 
-            <p className='text-xs border border-green-900 text-green-600 rounded-full px-3 py-1'>Approved</p>} 
+            <div className='inline-flex items-center gap-4'>{actionContent}
             <img onClick={deleteComment}
             src={assets.bin_icon} alt="" className='w-5 hover:scale-105 transition-all cursor-pointer'/>
             </div>

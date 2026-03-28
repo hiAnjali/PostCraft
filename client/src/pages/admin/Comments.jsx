@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from 'react'
-import { comments_data } from '../../assets/assets'
+import React, { useCallback, useEffect, useState } from 'react'
 import CommentTableItem from '../../components/admin/CommentTableItem'
-import { useAppContext } from '../../context/AppContext'
+import { useAppContext } from '../../context/useAppContext'
 import toast from 'react-hot-toast';
 
 
@@ -12,18 +11,25 @@ const Comments = () => {
 
     const {axios} = useAppContext()
 
-    const fetchComments = async()=>{
+    const fetchComments = useCallback(async()=>{
         try {
             const {data} = await axios.get('/api/admin/comments')
-            data.success ? setComments(data.comments) : toast.error(data.message)
+            if (data.success) {
+                setComments(data.comments)
+            } else {
+                toast.error(data.message)
+            }
         } catch (error) {
             toast.error(error.message)
         }
-    }
+    }, [axios])
 
     useEffect(()=>{
         fetchComments()
-    },[])
+    },[fetchComments])
+
+    const approvedButtonClass = filter === 'Approved' ? 'text-sky-950 bg-white' : 'text-gray-400'
+    const pendingButtonClass = filter === 'Not Approved' ? 'text-sky-950 bg-white' : 'text-gray-700'
     
   return (
     <div className='flex-1 pt-5 px-5 sm:pt-12 sm:pl-16 '>
@@ -31,9 +37,9 @@ const Comments = () => {
             <h1>Comments</h1>
             <div className='flex gap-4'>
                 <button onClick={()=> setFilter('Approved')}
-                 className={`shadow-custom-sm border rounded-full px-4 py-1 cursor-pointer text-xs ${filter === 'Approved' ? 'text-gray-400' : 'text-sky-950'}  `}>Approved</button>
+                 className={`shadow-custom-sm border rounded-full px-4 py-1 cursor-pointer text-xs ${approvedButtonClass}  `}>Approved</button>
                 <button onClick={()=> setFilter('Not Approved')}
-                className={`shadow-custom-sm border rounded-full px-4 py-1 cursor-pointer text-xs ${filter === 'Not Approved' ? 'text-gray-700' : 'text-sky-950'}  `}>Not Approved</button>
+                className={`shadow-custom-sm border rounded-full px-4 py-1 cursor-pointer text-xs ${pendingButtonClass}  `}>Not Approved</button>
             </div>
         </div>
 

@@ -2,16 +2,18 @@ import React from 'react'
 import logo from '../../assets/logo.png'
 import { Outlet} from 'react-router-dom'
 import Sidebar from '../../components/admin/Sidebar';
-import { useAppContext } from '../../context/AppContext';
+import { useAppContext } from '../../context/useAppContext';
 
 const Layout = () => {
 
-    const {axios, setToken, navigate} = useAppContext()
+    const {axios, setToken, setCurrentUser, navigate} = useAppContext()
 
     const logout = () =>{
       localStorage.removeItem('token');
+      localStorage.removeItem('currentUser');
       axios.defaults.headers.common['Authorization'] = null;
       setToken(null)
+      setCurrentUser(null)
       navigate('/')
     }
 

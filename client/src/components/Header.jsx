@@ -1,19 +1,17 @@
-import React, { useRef } from 'react';
-import { useAppContext } from '../context/AppContext';
+import React from 'react';
+import { useAppContext } from '../context/useAppContext';
 
 const Header = () => {
 
   const {setInput, input} = useAppContext()
-  const inputRef = useRef()
 
   const onSubmitHandler = async(e)=>{
     e.preventDefault();
-    setInput(inputRef.current.value)
+    setInput(input.trim())
   }
 
   const onClear = ()=>{
     setInput('')
-    inputRef.current.value = ''
   }
 
   return (
@@ -36,7 +34,7 @@ const Header = () => {
         </p>
         <form onSubmit={onSubmitHandler}
         className='flex justify-between max-w-lg max-sm:scale-75 mx-auto border border-gray-300 bg-white rounded overflow-hidden'>
-            <input ref={inputRef}
+            <input value={input} onChange={(e)=> setInput(e.target.value)}
             className='w-full pl-4 outline-none' type="text" placeholder='What are we digging for today?' required/>
             <button className='bg-sky-950 text-amber-50 px-8 py-2 m-1.5 rounded hover:scale-105 transition-all cursor-pointer' type='submit'>Search</button>
         </form> 
